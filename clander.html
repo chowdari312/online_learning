@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Full-Page Calendar</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #calendar {
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: fadeIn 1s;
+        }
+
+        h1 {
+            color: #007BFF;
+        }
+
+        .calendar-day {
+            display: inline-block;
+            width: 40px;
+            height: 40px;
+            line-height: 40px;
+            background-color: #007BFF;
+            color: #fff;
+            border-radius: 50%;
+            margin: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .calendar-day:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+
+        .event-list {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .event {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .current-day {
+            background-color: rgb(0, 123, 255);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="calendar">
+        <h1>November 2023</h1>
+        <div class="calendar-days">
+            <div class="calendar-day">1</div>
+            <div class="calendar-day current-day">2</div>
+            <div class="calendar-day">3</div>
+            <div class="calendar-day">4</div>
+            <div class="calendar-day">5</div>
+            <div class="calendar-day">6</div>
+            <div class="calendar-day">7</div>
+            <div class="calendar-day">8</div>
+            <div class="calendar-day">9</div>
+            <div class="calendar-day">10</div>
+            <div class="calendar-day">11</div>
+            <div class="calendar-day">12</div>
+            <div class="calendar-day">13</div>
+            <div class="calendar-day">14</div>
+            <div class="calendar-day">15</div>
+            <div class="calendar-day">16</div>
+            <div class="calendar-day">17</div>
+            <div class="calendar-day">18</div>
+            <div class="calendar-day">19</div>
+            <div class="calendar-day">20</div>
+            <div class="calendar-day">21</div>
+            <div class="calendar-day">22</div>
+            <div class="calendar-day">23</div>
+            <div class="calendar-day">24</div>
+            <div class="calendar-day">25</div>
+            <div class="calendar-day">26</div>
+            <div class="calendar-day">27</div>
+            <div class="calendar-day">28</div>
+            <div class="calendar-day">29</div>
+            <div class="calendar-day">30</div>
+        </div>
+        <div class="event-list">
+            <div class="event">Sample Event 1 - Nov 10, 2023</div>
+            <div class="event">Sample Event 2 - Nov 15, 2023</div>
+        </div>
+    </div>
+    <script>
+        // Function to apply fade-in animation to the calendar
+        function fadeIn(element, duration) {
+            element.style.opacity = 0;
+            let start = null;
+
+            function animate(timestamp) {
+                if (!start) start = timestamp;
+                const progress = timestamp - start;
+                element.style.opacity = Math.min(progress / duration, 1);
+                if (progress < duration) {
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        // Get the calendar element and apply the animation
+        const calendar = document.getElementById("calendar");
+        fadeIn(calendar, 1000); // 1000 milliseconds (1 second) for the animation
+    </script>
+</body>
+</html>

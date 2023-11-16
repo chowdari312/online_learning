@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>C Programming Quiz</title>
+    <style>
+        /* Your existing styles remain unchanged */
+
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+ ::-webkit-scrollbar {
+    width: 2px; /* Change this value to adjust the thickness */
+}
+
+/* Change the thickness of the horizontal scrollbar */
+::-webkit-scrollbar-thumb {
+    height: 10px; /* Change this value to adjust the thickness */
+}
+        .quiz-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            box-sizing: border-box;
+        }
+
+        .question {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .option {
+            margin-bottom: 8px;
+        }
+
+        button {
+            background-color: #ff0b0b;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:disabled {
+            background-color: #dddddd;
+            color: #555555;
+            cursor: not-allowed;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .correct-answer {
+            color: green;
+            font-weight: bold;
+        }
+
+        .incorrect-answer {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h2>C Programming Quiz</h2>
+        <div class="question" id="question"></div>
+        <div class="options" id="options"></div>
+        <div class="nav-buttons">
+            <button id="prevButton" onclick="prevQuestion()" disabled>Previous</button>
+            <button id="nextButton" onclick="nextQuestion()" disabled>Next</button>
+        </div>
+        <div class="result" id="result"></div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: 'What is the purpose of the "printf" function in C?',
+                options: ['Prints a message to the console', 'Scans input from the user', 'Formats and prints output to the console', 'Declares a variable'],
+                correctAnswer: 'Formats and prints output to the console'
+            },
+            {
+                question: 'Which keyword is used to define a constant in C?',
+                options: ['const', 'var', 'let', 'final'],
+                correctAnswer: 'const'
+            },
+            {
+                question: 'What is the syntax for declaring a pointer in C?',
+                options: ['&', '*', '#', '$'],
+                correctAnswer: '*'
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let selectedAnswers = [];
+
+        function loadQuestion() {
+            const questionElement = document.getElementById('question');
+            const optionsElement = document.getElementById('options');
+            const nextButton = document.getElementById('nextButton');
+            const prevButton = document.getElementById('prevButton');
+
+            const currentQuestion = questions[currentQuestionIndex];
+
+            questionElement.textContent = currentQuestion.question;
+            optionsElement.innerHTML = '';
+
+            currentQuestion.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.classList.add('option');
+
+                const radioBtn = document.createElement('input');
+                radioBtn.type = 'radio';
+                radioBtn.name = 'option';
+                radioBtn.value = index;
+                radioBtn.id = `option${index}`;
+                radioBtn.onclick = () => selectOption(index);
+
+                const label = document.createElement('label');
+                label.htmlFor = `option${index}`;
+                label.textContent = `${index + 1}. ${option}`;
+
+                optionElement.appendChild(radioBtn);
+                optionElement.appendChild(label);
+
+                optionsElement.appendChild(optionElement);
+            });
+
+            nextButton.disabled = true;
+            prevButton.disabled = currentQuestionIndex === 0;
+        }
+
+        function selectOption(optionIndex) {
+            const nextButton = document.getElementById('nextButton');
+            const prevButton = document.getElementById('prevButton');
+
+            selectedAnswers[currentQuestionIndex] = optionIndex;
+
+            nextButton.disabled = false;
+            prevButton.disabled = false;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            currentQuestionIndex--;
+
+            if (currentQuestionIndex >= 0) {
+                loadQuestion();
+            }
+        }
+
+        function showResults() {
+            const resultElement = document.getElementById('result');
+            const optionsElement = document.getElementById('options');
+            const nextButton = document.getElementById('nextButton');
+            const prevButton = document.getElementById('prevButton');
+
+            optionsElement.innerHTML = '';
+
+            questions.forEach((question, index) => {
+                const userAnswer = selectedAnswers[index];
+                const isCorrect = userAnswer !== undefined && question.options[userAnswer] === question.correctAnswer;
+
+                const questionResult = document.createElement('div');
+                questionResult.classList.add('option');
+
+                const questionText = document.createElement('p');
+                questionText.textContent = `${index + 1}. ${question.question}`;
+
+                const userAnswerText = document.createElement('p');
+                userAnswerText.textContent = `Your Answer: ${isCorrect ? question.options[userAnswer] : 'Not answered'}`;
+                userAnswerText.classList.add(isCorrect ? 'correct-answer' : 'incorrect-answer');
+
+                questionResult.appendChild(questionText);
+                questionResult.appendChild(userAnswerText);
+
+                optionsElement.appendChild(questionResult);
+            });
+
+            const totalScore = selectedAnswers.reduce((acc, userAnswer, index) => {
+                const isCorrect = userAnswer !== undefined && questions[index].options[userAnswer] === questions[index].correctAnswer;
+                return acc + (isCorrect ? 1 : 0);
+            }, 0);
+
+            resultElement.textContent = `Your score: ${totalScore} out of ${questions.length}`;
+            nextButton.style.display = 'none';
+            prevButton.style.display = 'none';
+        }
+
+        document.addEventListener('DOMContentLoaded', loadQuestion);
+    </script>
+</body>
+</html>
